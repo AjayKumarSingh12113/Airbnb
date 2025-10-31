@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Listing</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      width: 100%;
+      max-width: 450px;
+      padding: 40px 30px 30px 30px;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    /* Close Button Box */
+    .close-box {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      padding: 5px;
+    }
+
+    .close-box a {
+      text-decoration: none;
+      color: #fff;
+      background: #dc3545;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      display: inline-block;
+      transition: background 0.3s ease;
+    }
+
+    .close-box a:hover {
+      background: #b02a37;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 26px;
+      color: #222;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    label {
+      position: absolute;
+      top: -10px;
+      left: 12px;
+      background: #fff;
+      padding: 0 5px;
+      font-size: 13px;
+      color: #555;
+      font-weight: 500;
+    }
+
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 6px rgba(0,123,255,0.25);
+    }
+
+    .image-upload-box {
+      border: 2px dashed #007bff;
+      background: #f0f8ff;
+      padding: 6px;
+      text-align: center;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .image-upload-box:hover {
+      background: #e0f0ff;
+    }
+
+    .image-upload-box input[type="file"] {
+      border: none;
+      background: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button.submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 10px;
+    }
+
+    button.submit-btn:hover {
+      background: #0056b3;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 35px 20px 25px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Close Button -->
+    <div class="close-box">
+      <a href="/listings">✕ Close</a>
+    </div>
+
+    <h1>Create Listing</h1>
+    <form action="/listings" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input id="title" type="text" name="listing[title]" required>
+      </div>
+      <div class="form-group">
+        <label for="price">Price</label>
+        <input id="price" type="text" name="listing[price]" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <input id="description" type="text" name="listing[description]" required>
+      </div>
+      <div class="form-group image-upload-box">
+        <label for="image">Upload Image</label><br>
+        <input id="image" type="file" name="listing[image]" accept="image/*">
+      </div>
+      <div class="form-group">
+        <label for="country">Country</label>
+        <input id="country" type="text" name="listing[country]" required>
+      </div>
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input id="location" type="text" name="listing[location]" required>
+      </div>
+      <button type="submit" class="submit-btn">Submit Listing</button>
+    </form>
+  </div>
+</body>
+</html>

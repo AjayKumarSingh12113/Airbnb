@@ -1,0 +1,318 @@
+<% layout('/layouts/boilerplate') %>
+
+<body>
+  <!-- Full Width Header with Close Button -->
+  <header class="site-header">
+    <h1>Showing Details</h1>
+    <a href="/listings" class="close-btn-box">&times;</a>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Listing Image -->
+    <div class="listing-image">
+      <img src="<%= list.image.url %>" alt="<%= list.title %>">
+    </div>
+
+    <!-- Listing Details -->
+    <ul class="listing-details">
+      <li><strong>Title:</strong> <%= list.title %></li>
+      <li><strong>Owned By:</strong> <%= list.owner.username %></li>
+      <li><strong>Price:</strong> ₹ <%= list.price.toLocaleString("en-IN") %></li>
+      <li><strong>Description:</strong> <%= list.description %></li>
+      <li><strong>Location:</strong> <%= list.location %></li>
+      <li><strong>Country:</strong> <%= list.country %></li>
+    </ul>
+
+    <!-- Review Form -->
+    <% if(currUser){ %>
+    <section class="review-form">
+      <h2>Leave a Review</h2>
+      <form method="POST" action="/listings/<%= list._id %>/reviews">
+        <label for="rating">Rating:</label>
+        <input type="range" min="1" max="5" id="rating" name="review[rating]" value="1">
+
+        <label for="comment">Comment:</label>
+        <textarea id="comment" name="review[comment]" rows="5" required></textarea>
+
+        <button type="submit">Submit Review</button>
+      </form>
+    </section>
+    <% } %>
+
+    <hr>
+
+    <!-- All Reviews -->
+    <section class="reviews-section">
+      <h2>All Reviews</h2>
+      <ul class="reviews-list">
+        <% for(let review of list.reviews){ %>
+          <li>
+            <div class="review-header">
+              <strong><%= review.author.username %></strong>
+              <% if(currUser && currUser._id.equals(review.author._id)){ %>
+                <form method="POST" action="/listings/<%= list._id %>/reviews/<%= review._id %>?_method=DELETE">
+                  <button type="submit" class="delete-btn">Delete</button>
+                </form>
+              <% } %>
+            </div>
+            <p><%= review.comment %></p>
+            <div class="stars">
+              <% for(let i=1; i<=5; i++){ %>
+                <% if(i <= review.rating){ %>
+                  <span class="star filled">&#9733;</span>
+                <% } else { %>
+                  <span class="star">&#9733;</span>
+                <% } %>
+              <% } %>
+            </div>
+          </li>
+        <% } %>
+      </ul>
+    </section>
+
+    <!-- Action Buttons -->
+    <% if(currUser && currUser._id.equals(list.owner._id)){ %>
+    <div class="actions">
+        <a href="/listings/<%= list._id %>/edit" class="edit-btn">✏️ Edit</a>
+        <form method="POST" action="/listings/<%= list._id %>?_method=DELETE">
+          <button type="submit" class="delete-btn">🗑️ Delete</button>
+        </form>
+    </div>
+    <% } %>
+  </main>
+
+  <style>
+    /* Reset & Body */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Header */
+    .site-header {
+      width: 100%;
+      color: #060606;
+      padding: 20px 0;
+      text-align: center;
+      font-size: 28px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    /* Boxed Close Button */
+    .close-btn-box {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 35px;
+      height: 35px;
+      background: #f0f0f0;
+      color: #333;
+      font-size: 24px;
+      font-weight: bold;
+      border-radius: 8px;
+      text-decoration: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .close-btn-box:hover {
+      background: #dc3545;
+      color: #fff;
+    }
+
+    /* Main Container */
+    .container {
+      width: 80%;
+      max-width: 1000px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    /* Listing Image */
+    .listing-image img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      transition: transform 0.3s ease;
+    }
+
+    .listing-image img:hover {
+      transform: scale(1.03);
+    }
+
+    /* Listing Details */
+    .listing-details {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 30px;
+    }
+
+    .listing-details li {
+      background: #f9fafc;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      font-size: 16px;
+      color: #333;
+    }
+
+    /* Review Form */
+    .review-form {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      margin-bottom: 30px;
+    }
+
+    .review-form h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 20px;
+      color: #333;
+    }
+
+    .review-form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    .review-form input[type="range"] {
+      width: 30%;
+      accent-color: #007bff;
+      margin-bottom: 15px;
+    }
+
+    .review-form textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      margin-bottom: 15px;
+    }
+
+    .review-form button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 16px;
+    }
+
+    .review-form button:hover {
+      background: #0056b3;
+    }
+
+    /* Reviews List */
+    .reviews-section h2 {
+      margin-bottom: 15px;
+      font-size: 20px;
+      color: #333;
+    }
+
+    .reviews-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .reviews-list li {
+      background: #f9fafc;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 12px;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .stars {
+      margin-top: 6px;
+    }
+
+    .star {
+      color: #ccc;
+      font-size: 18px;
+    }
+
+    .star.filled {
+      color: #f4b400;
+    }
+
+    /* Action Buttons */
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: flex-start;
+      margin-top: 20px;
+    }
+
+    .actions a,
+    .actions button {
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      color: #fff;
+      border: none;
+      transition: transform 0.2s ease;
+    }
+
+    .actions a:hover,
+    .actions button:hover {
+      transform: translateY(-2px);
+    }
+
+    .edit-btn { background: #007bff; }
+    .edit-btn:hover { background: #0056b3; }
+
+    .delete-btn { background: #dc3545; }
+    .delete-btn:hover { background: #a71d2a; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        width: 95%;
+        padding: 20px;
+      }
+
+      .review-form input[type="range"] {
+        width: 50%;
+      }
+
+      .listing-image img {
+        height: 250px;
+      }
+    }
+  </style>
+</body>
