@@ -163,6 +163,21 @@
         <label for="description">Description</label>
         <input id="description" type="text" name="listing[description]" required>
       </div>
+      <div class="form-group">
+        <label for="category">Select Category:</label>
+        <select name="listing[category]" id="category" required>
+            <option value="trending">🔥 Trending</option>
+            <option value="rooms">🛏️ Rooms</option>
+            <option value="farms">🚜 Farms</option>
+            <option value="cities">🏙️ Iconic Cities</option>
+            <option value="beach">🏖️ Beach</option>
+            <option value="cabins">🏡 Cabins</option>
+            <option value="pools">🏊 Pools</option>
+            <option value="mountain">🌋 Mountain</option>
+            <option value="castles">♟️ Castles</option>
+            <option value="arctic">❄️ Arctic</option>
+        </select>
+      </div>
       <div class="form-group image-upload-box">
         <label for="image">Upload Image</label><br>
         <input id="image" type="file" name="listing[image]" accept="image/*">

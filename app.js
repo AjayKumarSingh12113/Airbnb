@@ -80,9 +80,15 @@ app.use('/', userRoutes);
 // })
 
 
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hello, World!");
+// });
+// Example: /listings/category/mountain
+// app.get("/listings/category/:category", async (req, res) => {
+//     const { category } = req.params;
+//     const allListing = await Listing.find({ category });
+//     res.render("listings/index.ejs", { allListing, activeCategory: category });
+// });
 
 // Agar koi route match na ho
 app.all(/.*/, (req, res, next) => {

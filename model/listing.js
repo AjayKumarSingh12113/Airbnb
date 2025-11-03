@@ -20,6 +20,22 @@ const listingSchema = new mongoose.Schema({
     country:{
         type: String,
     },
+    category: {
+        type: String,
+        enum: [
+            "trending",
+            "rooms",
+            "farms",
+            "cities",
+            "beach",
+            "cabins",
+            "pools",
+            "mountain",
+            "castles",
+            "arctic"
+        ],
+        required: true
+    },
     price:{
         type: Number,
         required : true
