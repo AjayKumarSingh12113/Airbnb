@@ -84,39 +84,9 @@ app.use("/listings/:id/reviews" , ReviewRoutes);
 app.use('/', userRoutes);
 
 
-
-app.get("/listings/search", async (req, res) => {
-  try {
-    // 1️⃣ Get query parameter from URL (?query=India)
-    const query = req.query.query?.trim();
-
-    if (!query) {
-      req.flash("error", "Please enter a destination to search!");
-      return res.redirect("/listings");
-    }
-
-    // 2️⃣ Find all listings whose location matches the query (case-insensitive)
-    const allListing = await Listing.find({
-      location: { $regex: query, $options: "i" }
-    });
-
-    // 3️⃣ If no results found
-    if (allListing.length === 0) {
-      req.flash("error", `No listings found in "${query}".`);
-      return res.redirect("/listings");
-    }
-
-    // 4️⃣ Render the same index page with filtered results
-    console.log("done");
-    
-    res.send("allListing");
-  } catch (error) {
-    console.error("Search error:", error);
-    req.flash("error", "Something went wrong while searching!");
-    res.redirect("/listings");
-  }
+app.get("/", (req, res) => {
+  res.redirect("/listings");
 });
-
 // Agar koi route match na ho
 app.all(/.*/, (req, res, next) => {
   next(new ExpressError(404, "Page Not Found"));
