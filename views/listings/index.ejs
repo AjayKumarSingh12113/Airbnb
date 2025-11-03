@@ -90,6 +90,19 @@
     </div>
   </div>
 
+<% if (success && success.length > 0) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= success %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+<% if (error && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= error %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
   <!-- 🔹 Listings Section -->
 <% 
   // Filter listings based on activeCategory
@@ -101,9 +114,13 @@
 </h2>
 
 <% if(filteredListings.length === 0) { %>
-  <h1 style="text-align:center; margin-top:50px;">
+<h1 style="text-align:center; margin-top:50px;">
+  <% if (activeCategory) { %>
     This <%= activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1) %> has no listing
-  </h1>
+  <% } else { %>
+    No listings available.
+  <% } %>
+</h1>
 <% } else { %>
   <div class="listing-grid">
     <% filteredListings.forEach(listing => { %>
@@ -126,69 +143,7 @@
 
 
 
-  <!-- 🔹 Listings Section
-   <% if(activeCategory === null){ %>
-    <h2 style="text-align:center; margin-bottom:20px;">All Listings</h2>
-  <div class="listing-grid">
-    <% for (let listing of allListing) { %>
-      <div class="listing-card">
-        <a href="/listings/<%= listing._id %>">
-          <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
-          <div class="listing-info">
-            <h2><%= listing.title %></h2>
-            <p class="location"><%= listing.location %>, <%= listing.country %></p>
-            <p class="price">₹<%= listing.price %> / night</p>
-          </div>
-        </a>
-      </div>
-    <% } %>
-  </div>
-  <% } else { %>
-    <h2 style="text-align:center; margin-bottom:20px;"><%= activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1) %> Listings</h2>
-    <div class="listing-grid">
-      <% for (let listing of allListing) { %>
-        <% if (listing.category === activeCategory) { %>
-          <div class="listing-card">
-            <a href="/listings/<%= listing._id %>">
-              <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
-              <div class="listing-info">
-                <h2><%= listing.title %></h2>
-                <p class="location"><%= listing.location %>, <%= listing.country %></p>
-                <p class="price">₹<%= listing.price %> / night</p>
-              </div>
-            </a>
-          </div>
-        <% } else{ %>
-          <h1>
-            This <%= activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1) %> has no listing
-          </h1>
-        <% } %>
-      <% } %>
-    </div>
-  <% } %> -->
-
-
-
-  <!-- <h2 style="text-align:center; margin-bottom:20px;">
-  <%= activeCategory ? activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1) : 'All' %> Listings
-</h2>
-
-<div class="listing-grid">
-  <% for (let listing of allListing) { %>
-    <% if (!activeCategory || listing.category === activeCategory) { %>
-      <div class="listing-card">
-        <a href="/listings/<%= listing._id %>">
-          <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
-          <div class="listing-info">
-            <h2><%= listing.title %></h2>
-            <p class="location"><%= listing.location %>, <%= listing.country %></p>
-            <p class="price">₹<%= listing.price %> / night</p>
-          </div>
-        </a>
-      </div>
-    <% } %>
-  <% } %>
-</div> -->
+ 
 
 </body>
 

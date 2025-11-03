@@ -24,6 +24,28 @@ router
     wrapAsync(listingController.createListing)
   );
 
+router.get("/search", wrapAsync(async (req, res) => {
+  const query = req.query.query?.trim();
+
+  if (!query) {
+    req.flash("error", "Please enter a destination to search!");
+    return res.redirect("/listings");
+  }
+
+  const allListing = await Listing.find({
+    location: { $regex: query, $options: "i" },
+  });
+
+  if (allListing.length === 0) {
+    req.flash("error", `No listings found for "${query}".`);
+    return res.redirect("/listings");
+  }
+
+  res.render("listings/index.ejs", { allListing, searchQuery: query, activeCategory: null });
+}));
+
+
+
 router.get("/category/:category", wrapAsync(async (req, res) => {
     const { category } = req.params;
     const allListing = await Listing.find({ category });
@@ -56,40 +78,3 @@ router.get(
 );
 
 module.exports = router;
-//index route
-//router.get("/" , wrapAsync(listingController.index));
-
-//new route
-//router.get("/new" ,isLoggedIn,listingController.renderNewForm);
-
-//show route
-// router.get("/:id", wrapAsync(listingController.showListing));
-
-//create route
-//router.post("/" ,isLoggedIn, wrapAsync(listingController.createListing));
-
-//edit route
-// router.get(
-//   "/:id/edit",
-//   isLoggedIn,
-//   isOwner,
-//   wrapAsync(listingController.renderEditForm)
-// );
-
-//update route
-// router.put(
-//   "/:id",
-//   isLoggedIn,
-//   isOwner,
-//   wrapAsync(listingController.updateListing)
-// );
-
-//delete route
-// router.delete(
-//   "/:id",
-//   isLoggedIn,
-//   isOwner,
-//   wrapAsync(listingController.deleteListing)
-// );
-
-// module.exports = router;

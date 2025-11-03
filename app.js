@@ -17,6 +17,7 @@ const {ratingSchema} = require('./schema');
 const ListingRoutes = require('./routes/listing');
 const ReviewRoutes = require('./routes/review');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
@@ -34,11 +35,24 @@ app.engine('ejs', ejsMate);
 main().then(() => console.log("Connected to MongoDB"))
 .catch(err => console.log(err));
 async function main(){
-    await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust")
+    await mongoose.connect(process.env.ATLAS_URL);
 }
 
+const store = MongoStore.create({
+  mongoUrl: process.env.ATLAS_URL,
+  crypto:{
+    secret:process.env.SECRET
+  },
+  touchAfter:24*3600
+});
+
+store.on("error" , ()=>{
+  console.log("session store error");
+})
+
 const sessionOptions={
-  secret: "mysecretcode",
+  store:store,
+  secret:process.env.SECRET,
   resave:false,
   saveUninitialized:true,
   cookie:{
@@ -70,25 +84,38 @@ app.use("/listings/:id/reviews" , ReviewRoutes);
 app.use('/', userRoutes);
 
 
-// app.get("/fakeUser", async (req,res) =>{
-//   let fakeUser = new User({
-//     username:"ajaykumar",
-//     email:"ajay@gmail.com"
-//   });
-//   let newUser = await User.register(fakeUser,"1234");
-//   res.send(newUser);
-// })
 
+app.get("/listings/search", async (req, res) => {
+  try {
+    // 1️⃣ Get query parameter from URL (?query=India)
+    const query = req.query.query?.trim();
 
-// app.get("/", (req, res) => {
-//   res.send("Hello, World!");
-// });
-// Example: /listings/category/mountain
-// app.get("/listings/category/:category", async (req, res) => {
-//     const { category } = req.params;
-//     const allListing = await Listing.find({ category });
-//     res.render("listings/index.ejs", { allListing, activeCategory: category });
-// });
+    if (!query) {
+      req.flash("error", "Please enter a destination to search!");
+      return res.redirect("/listings");
+    }
+
+    // 2️⃣ Find all listings whose location matches the query (case-insensitive)
+    const allListing = await Listing.find({
+      location: { $regex: query, $options: "i" }
+    });
+
+    // 3️⃣ If no results found
+    if (allListing.length === 0) {
+      req.flash("error", `No listings found in "${query}".`);
+      return res.redirect("/listings");
+    }
+
+    // 4️⃣ Render the same index page with filtered results
+    console.log("done");
+    
+    res.send("allListing");
+  } catch (error) {
+    console.error("Search error:", error);
+    req.flash("error", "Something went wrong while searching!");
+    res.redirect("/listings");
+  }
+});
 
 // Agar koi route match na ho
 app.all(/.*/, (req, res, next) => {
@@ -108,20 +135,3 @@ app.listen(port, () => {
 
 
 
-// app.get('/testListing',async (req,res) =>{
-//     let flist = new Listing({
-//         title:'MY new Villa',
-//         description: "By the beath",
-//         price:1200,
-//         location:'calanguala',
-//         country:'Italy',
-//     })
-//     await flist.save();
-//     console.log(flist);
-    
-//     res.send("Listing created");
-// })
-
-// app.get("/", (req, res) => {
-//     res.send("Hello, World!")
-// })
